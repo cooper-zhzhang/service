@@ -4,7 +4,11 @@
 int main()
 {
 	Mutex mutex;
-	mutex.lock();
+	{
+	MutexGaurd(mutex);
+
+	//离开这个作用域的时候 自动解锁
+	}
 
 	return 0;
 }
