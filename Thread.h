@@ -32,6 +32,7 @@ class Thread
 
 		void start()
 		{
+			assert(!start_);
 			start_ = true;
 			thread_data *thread_data_ptr = new thread_data(thread_function);
 			pthread_create(&tid, NULL, run, thread_data_ptr);
