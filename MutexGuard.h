@@ -1,22 +1,26 @@
-#include <pthread>
+#ifndef MUTEXGUARD_H
+#define MUTEXGUARD_H
+#include <pthread.h>
 #include "Mutex.h"
 
 class MutexGuard
 {
-	MutexGuard(Mutex &mutex):mutex_(mutex)
+	public:
+		MutexGuard(Mutex &mutex):mutex_(mutex)
 	{
 		mutex_.lock();
 	}
 
-	~MutexGuard()
-	{
-		mutex_.unlock();
-	}
+		~MutexGuard()
+		{
+			mutex_.unlock();
+		}
 
-private:
-	MutexGuard(MutexGuard &);
-	MutexGuard& operator=(MutexGuard &);
-	Mutex &mutex_;
+	private:
+		MutexGuard(const MutexGuard &);
+		MutexGuard& operator=(const MutexGuard &);
+		Mutex &mutex_;
 };
 
 
+#endif
