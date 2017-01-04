@@ -26,7 +26,7 @@ class Thread
 		{
 			if(start_ && !join_)
 			{
-				pthread_detach(tid);
+				pthread_detach(tid_);
 			}
 		}
 
@@ -35,20 +35,23 @@ class Thread
 			assert(!start_);
 			start_ = true;
 			thread_data *thread_data_ptr = new thread_data(thread_function);
-			pthread_create(&tid, NULL, run, thread_data_ptr);
+			pthread_create(&tid_, NULL, run, thread_data_ptr);
 		}
 
 		void stop()
 		{
-			pthread_detach(tid);
+			pthread_detach(tid_);
 		}
 
 		int join()
 		{
 			assert(!join_);
 			join_ = true;
-			return pthread_join(tid, NULL);
+			return pthread_join(tid_, NULL);
 		}
+
+		Thread(const Thread&) = delete;
+		Thread& operator=(const Thread&) = delete;
 
 	private:
 
@@ -64,10 +67,7 @@ class Thread
 
 		std::function<void()> thread_function;
 
-		Thread(const Thread&) = delete;
-		Thread& operator=(const Thread&) = delete;
-
-		pthread_t tid;
+		pthread_t tid_;
 		bool start_;
 		bool join_;
 };
