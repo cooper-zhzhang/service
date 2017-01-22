@@ -7,7 +7,6 @@
 #include <string>
 
 
-//FIX ME add return thread name
 class thread_data
 {
 	public:
@@ -30,6 +29,11 @@ class Thread
 			{
 				pthread_detach(tid_);
 			}
+		}
+
+		std::string name()
+		{
+			return name_;
 		}
 
 		void start()

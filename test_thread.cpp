@@ -1,5 +1,6 @@
 #include "Thread.h"
 #include <iostream>
+#include <string>
 
 
 void fun()
@@ -10,9 +11,9 @@ void fun()
 int main()
 {
 
-
 	std::function<void()> thread_fun = fun;
-	Thread thread(thread_fun);
+	Thread thread(thread_fun, std::string("test"));
+	std::cout << thread.name() << std::endl;
 	thread.start();
 	thread.join();
 
