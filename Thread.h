@@ -4,8 +4,10 @@
 #include <functional>
 #include <iostream>
 #include <assert.h>
+#include <string>
 
 
+//FIX ME add return thread name
 class thread_data
 {
 	public:
@@ -16,7 +18,7 @@ class thread_data
 class Thread
 {
 	public:
-		explicit	Thread(std::function<void()> threadFunction):thread_function(threadFunction)
+		explicit	Thread(std::function<void()> threadFunction, std::string thread_name):thread_function_(threadFunction), name_(thread_name)
 	{
 		start_ =false;
 		join_ = false;
@@ -34,7 +36,7 @@ class Thread
 		{
 			assert(!start_);
 			start_ = true;
-			thread_data *thread_data_ptr = new thread_data(thread_function);
+			thread_data *thread_data_ptr = new thread_data(thread_function_);
 			pthread_create(&tid_, NULL, run, thread_data_ptr);
 		}
 
@@ -65,11 +67,11 @@ class Thread
 			return NULL;
 		}
 
-		std::function<void()> thread_function;
-
+		std::function<void()> thread_function_;
 		pthread_t tid_;
 		bool start_;
 		bool join_;
+		std::string name_;
 };
 
 #endif
