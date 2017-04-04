@@ -10,8 +10,8 @@ class Epoll
   public:
 
   private:
-  int epollfd_;
-  std::map<int, Channel*> channels_;
-  EventLoop *loop;
+    int epollfd_;
+    std::map<int, Channel*> channels_;
+    EventLoop *loop;
 }
 #endif

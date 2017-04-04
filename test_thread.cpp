@@ -1,6 +1,8 @@
 #include "Thread.h"
 #include <iostream>
 #include <string>
+#include <functional>
+#include <pthread.h>
 
 
 void fun()

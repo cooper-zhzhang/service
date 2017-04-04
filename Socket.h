@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include "InetAddress.h"
 
 class Socket
 {
@@ -17,7 +18,7 @@ class Socket
       close(socket_fd_);
     }
     
-    int socketfd()
+    int socketFd()
     {
       return socket_fd_;
     }
@@ -26,6 +27,15 @@ class Socket
     {
       return socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     }
+
+    static void bindFdAndAddress(int Fd, InetAddress serviceAddress)
+    {
+      //TODO 完善InetAddress 类后在来添加这个函数
+      ::bind(Fd, serviceAddress.);
+    }
+
+    void listen();
+    int acceptSocket(InetAddress clientAddress);
 
   private:
     int socket_fd_;

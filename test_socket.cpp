@@ -4,7 +4,7 @@
 int main()
 {
   Socket socket(Socket::create());
-  std::cout << socket.socketfd();
+  std::cout << socket.socketFd();
   std::cout << std::endl;
 
   return 0;
