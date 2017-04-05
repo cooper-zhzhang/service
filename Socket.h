@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include "InetAddress.h"
+#include <netinet/in.h>
 
 class Socket
 {
@@ -31,7 +32,12 @@ class Socket
     static void bindFdAndAddress(int Fd, InetAddress serviceAddress)
     {
       //TODO 完善InetAddress 类后在来添加这个函数
-      ::bind(Fd, serviceAddress.);
+      struct sockaddr_in address = serviceAddress.inetAddress();
+
+      if(-1 == ::bind(Fd, (sockaddr*)(&address), sizeof(serviceAddress.inetAddress())))
+      {
+        exit(-1);
+      }
     }
 
     void listen();

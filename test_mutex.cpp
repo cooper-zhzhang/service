@@ -8,28 +8,28 @@ Mutex mutex;
 
 void* fun(void*)
 {
-	int i = 10000;
-	while(i--)
-	{
-		{
-			MutexGuard lock(mutex);
-			++ count;
-		}
-	}
-	return NULL;
+  int i = 10000;
+  while(i--)
+  {
+    {
+      MutexGuard lock(mutex);
+      ++ count;
+    }
+  }
+  return NULL;
 }
 
 int main()
 {
 
-	pthread_t t1, t2;
-	pthread_create(&t1, NULL, fun, NULL);
-	pthread_create(&t2, NULL, fun, NULL);
+  pthread_t t1, t2;
+  pthread_create(&t1, NULL, fun, NULL);
+  pthread_create(&t2, NULL, fun, NULL);
 
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
-	std::cout << count << std::endl;
+  pthread_join(t1, NULL);
+  pthread_join(t2, NULL);
+  std::cout << count << std::endl;
 
-	return 0;
+  return 0;
 }
 
