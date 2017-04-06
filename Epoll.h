@@ -8,8 +8,13 @@
 class Epoll
 {
   public:
+    Epoll(EventLoop *loop);
+    addChannel();
+    deleteChannel();
+    updateChannel();
 
   private:
+    void update(int operation, Channel *channel);
     int epollfd_;
     std::map<int, Channel*> channels_;
     EventLoop *loop;
