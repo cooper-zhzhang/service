@@ -4,4 +4,4 @@ main : test_thread.o
 test_thread.o : test_thread.cpp Thread.h
 	$(cc) -c test_thread.cpp
 clean :
-	rm test_thread.o main
+	rm main test_thread.o

@@ -7,6 +7,7 @@ class Channel
 {
   private:
     EventLoop *loop;
+    int state;
 }
 
 #endif

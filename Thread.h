@@ -1,5 +1,6 @@
 #ifndef THREAD_H
 #define THREAD_H
+
 #include <pthread.h>
 #include <functional>
 #include <iostream>

@@ -19,11 +19,11 @@ void Acceptor::listen()
   serviceChannel_.enableReading();
 }
 
-void Acceptor::handleRead()
+void Acceptor::_handleRead()
 {
   InetAddress clientAddress;
   int connFd = serviceSocket_.acceptSocket(clientAddress);
-  if(connFd >= && newConnectionCallBack)
+  if(connFd >= 0 && newConnectionCallBack)
   {
     newConnectionCallBack(connFd, clientAddress);
   }

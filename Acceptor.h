@@ -20,7 +20,7 @@ class Acceptor
     }
 
   private:
-    void handleRead();
+    void _handleRead();
     EventLoop* loop_;
     Socket serviceSocket_;
     Channel serviceChannel_;
