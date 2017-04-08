@@ -49,17 +49,21 @@ class Channel
     bool isWriting();
     bool isReading();
 
+    static const int NEWED;
+    static const int ADDED;
+    static const int DELETED;
+
   private:
 
     static const int READEVENT;
     static const int WRITEEVENT;
-    static const int NONEEVENt;
+    static const int NONEEVENT;
     void _update();
 
     EventLoop *loop_;
 
     //表示当前Channel的状态
-    //-1: 初始化
+    //-1: 初始化新的
     // 0: 已添加
     // 1：已删除
     int status_;

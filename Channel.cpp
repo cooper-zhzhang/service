@@ -1,11 +1,15 @@
 #include "Channel.h"
 
 const int Channel::READEVENT = EPOLLIN | EPOLLPRI;
-const int Channel::NONEEVENt = 0;
+const int Channel::NONEEVENT = 0;
 const int Channel::WRITEEVENT = EPOLLOUT;
 
+const int Channel::NEWED = -1;
+const int Channel::ADDED = 0;
+const int Channel::DELETED = 1;
+
 Channel::Channel(EventLoop *loop, int fd): 
-  loop_(loop), fd_(fd), events_(0), status_(-1)
+  loop_(loop), fd_(fd), events_(NONEEVENT), status_(NEWED)
 {
 }
 
