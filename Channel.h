@@ -1,8 +1,11 @@
 #ifndef CHANNEL_H
 #define CHANNEL_H
-#include <functional>
 
+#include <functional>
+#include <algorithm>
 #include "EventLoop.h"
+
+class EventLoop;
 
 class Channel
 {
@@ -38,6 +41,16 @@ class Channel
       return loop_;
     }
 
+    void setStatus(int status)
+    {
+      status_ =  status;
+    }
+
+    int stauts()
+    {
+      return status_;
+    }
+
     void disableReading();
     void enableReading();
 
@@ -48,6 +61,10 @@ class Channel
 
     bool isWriting();
     bool isReading();
+    bool isNonEvent()
+    {
+      return events_ == NONEEVENT;
+    }
 
     static const int NEWED;
     static const int ADDED;
@@ -83,7 +100,6 @@ class Channel
     std::function<void()> closeCallBack_;
     std::function<void()> errorCallBack_;
     std::function<void()> eventCallBack_;
+};
 
-}
-
-
+#endif
