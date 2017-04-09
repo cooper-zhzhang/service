@@ -1,7 +1,7 @@
 #include "Acceptor.h"
 
 Acceptor::Acceptor(EventLoop *loop, InetAddress inetAddress):
-  loop_(loop), serviceSocket_(Socket::create()), serviceChannel_(loop, serviceSocket_.socketFd())
+  loop_(loop), serviceSocket_(Socket::createFd()), serviceChannel_(loop, serviceSocket_.socketFd())
 {
   Socket::bindFdAndAddress(serviceSocket_, inetAddress);
   serviceChannel_.setReadCallBack(std::bind(&Acceptor::handleRead, this));
