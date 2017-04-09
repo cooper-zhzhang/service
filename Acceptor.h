@@ -27,4 +27,5 @@ class Acceptor
     std::function<void (int socketFd, InetAddress& clientInetAddress)> newConnectionCallBack_;
 
 };
+
 #endif
