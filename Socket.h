@@ -24,14 +24,13 @@ class Socket
       return socket_fd_;
     }
 
-    static int create()
+    static int createFd()
     {
       return socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     }
 
     static void bindFdAndAddress(int Fd, InetAddress serviceAddress)
     {
-      //TODO 完善InetAddress 类后在来添加这个函数
       struct sockaddr_in address = serviceAddress.inetAddress();
 
       if(-1 == ::bind(Fd, (sockaddr*)(&address), sizeof(serviceAddress.inetAddress())))
