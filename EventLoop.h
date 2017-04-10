@@ -1,9 +1,12 @@
 #ifndef EVENTLOOP_H
 #define EVENTLOOP_H
 
+#include <memory>
 #include "Current.h"
 #include "Channel.h"
 #include "Epoll.h"
+#include "Mutex.h"
+class Epoll;
 
 class EventLoop
 {

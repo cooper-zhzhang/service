@@ -10,9 +10,15 @@ EventLoop::EventLoop():
   wakeChannel_(new Channel(this, wakeFd_)), 
   epoll_(Epoll::newEpoll(this))
 {
-  //TODO 补充read回调
-  wakeChannel_->setReadCallBacki(std::bind(&EventLoop::handleWakeUp, this));
+  wakeChannel_->setReadCallBack(std::bind(&EventLoop::handleWakeUp, this));
   wakeChannel_->enableReading();
+}
+
+EventLoop::~EventLoop()
+{
+  wakeChannel_->disableAll();
+  wakeChannel_->remove();
+  ::close(wakeFd_);
 }
 
 void EventLoop::wakeUp()
@@ -48,7 +54,7 @@ void EventLoop::run()
 
 void EventLoop::doPengFunctions()
 {
-  std::vector<std::finction<void()> functions;
+  std::vector<std::function<void()>> functions;
 
   {
     MutexGuard lock(mutex_);
