@@ -4,7 +4,5 @@
 int main()
 {
   EventLoop loop;
-  Epoll epoll(&loop);
-
   return 0;
 }
