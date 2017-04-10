@@ -77,4 +77,53 @@ void Epoll::fillActiveChannel(int num, std::vector<Channel*> *channelList)
   }
 }
 
+void Epoll::poll(int timeOut, std::vector<Channel*> *channelList)
+{
+  int num = epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeOut);
+  if(num > 0)
+  {
+    fillActiveChannel(num, channelList);
+  }
+  else if(num == 0)
+  {
+
+  }
+  else
+  {
+    // TODO 错误发生
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

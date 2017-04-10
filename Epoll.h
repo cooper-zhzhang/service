@@ -13,7 +13,23 @@ class Epoll
     Epoll(EventLoop *loop);
     void removeChannel(Channel *channel);
     void updateChannel(Channel *channel);
-    void poll(int timeOut);
+    void poll(int timeOut, std::vector<Channel*> *channelList);
+
+    static int createEventFd()
+    {
+      int eventFd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+      if(eventFd < 0)
+      {
+        exit(-1);
+      }
+      
+      return eventFd;
+    }
+
+    static Epoll* newEpoll(EventLoop *loop)
+    {
+      return new Epoll(loop);
+    }
 
   private:
     void fillActiveChannel(int num, std::vector<Channel*> *chanbelList);
