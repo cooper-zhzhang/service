@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include "EventLoop.h"
+#include "MutexGuard.h"
 
 EventLoop::EventLoop():
   running_(false), 
@@ -44,3 +45,37 @@ void EventLoop::run()
     doPengFunctions();
   }
 }
+
+void EventLoop::doPengFunctions()
+{
+  std::vector<std::finction<void()> functions;
+
+  {
+    MutexGuard lock(mutex_);
+    std::swap(functions, pengFunctions_);
+  }
+
+  for(int i = 0; i < functions.size(); ++i)
+  {
+    functions[i]();
+  }
+}
+
+void EventLoop::runInLoop(std::function<void()> fun)
+{
+  if(isInLoopThread())
+  {
+    fun();
+  }
+  else
+  {
+    runInQueue(fun);
+  }
+}
+
+void EventLoop::runInQueue(std::function<void()> fun)
+{
+  MutexGuard lock(mutex_);
+  pengFunctions_.push_back(fun);
+}
+

@@ -29,6 +29,12 @@ class EventLoop
     void wakeUp();
 
     void doPengFunctions();
+    void runInLoop(std::function<void()> fun);
+    bool isInLoopThread()
+    {
+      return threadId_ == Current::tid();
+    }
+    void runInQueue(std::function<void()> fun);
 
   private:
     std::vector<Channel*> activeChannels_;
