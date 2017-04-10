@@ -19,12 +19,10 @@ void Epoll::removeChannel(Channel *channel)
   int fd = channel->fd();
   channels_.erase(fd);
 
-
   if(channel->status() == ADDRED)
     _update(EPOLL_CTL_DEL, channel);
 
   channel->setStatus(Channel::NEWED);
-
 }
 
 void Epoll::updateChannel(Channel *channel)
@@ -93,37 +91,4 @@ void Epoll::poll(int timeOut, std::vector<Channel*> *channelList)
     // TODO 错误发生
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
