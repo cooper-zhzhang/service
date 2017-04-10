@@ -1,6 +1,7 @@
 #ifndef EPOLL_H
 #define EPOLL_H
 
+#include <sys/eventfd.h>
 #include <map>
 #include <vector>
 #include <sys/epoll.h>
