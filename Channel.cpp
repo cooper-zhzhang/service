@@ -13,17 +13,17 @@ Channel::Channel(EventLoop *loop, int fd):
 {
 }
 
-void Channel::setReadCallBack(std::function<void()> callBack)
+void Channel::setReadCallBack(const std::function<void()> &callBack)
 {
   readCallBack_ = callBack;
 }
 
-void Channel::setWriteCallBack(std::function<void()> callBack)
+void Channel::setWriteCallBack(const std::function<void()> &callBack)
 {
   writeCallBack_ = callBack;
 }
 
-void Channel::setErrorCallBack(std::function<void()> callBack)
+void Channel::setErrorCallBack(const std::function<void()> &callBack)
 {
   errorCallBack_ = callBack;
 }
@@ -62,9 +62,9 @@ void Channel::enableWriting()
   _update();
 }
 
-void disableAll()
+void Channel::disableAll()
 {
-  events_ &= NONEEVENt;
+  events_ &= NONEEVENT;
 }
 
 bool Channel::isWriting()

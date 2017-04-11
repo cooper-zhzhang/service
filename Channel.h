@@ -13,10 +13,10 @@ class Channel
 
     void handleEvent();
 
-    void setReadCallBack(std::function<void()> callBack);
-    void setWriteCallBack(std::function<void()> callBack);
-    void setErrorCallBack(std::function<void()> callBack);
-    void SetCloseCallBack(std::function<void()> callBack);
+    void setReadCallBack(const std::function<void()> &callBack);
+    void setWriteCallBack(const std::function<void()> &callBack);
+    void setErrorCallBack(const std::function<void()> &callBack);
+    void SetCloseCallBack(const std::function<void()> &callBack);
 
     void remove();
 
@@ -45,7 +45,7 @@ class Channel
       status_ =  status;
     }
 
-    int stauts()
+    int status()
     {
       return status_;
     }
