@@ -16,7 +16,7 @@ class Channel
     void setReadCallBack(const std::function<void()> &callBack);
     void setWriteCallBack(const std::function<void()> &callBack);
     void setErrorCallBack(const std::function<void()> &callBack);
-    void SetCloseCallBack(const std::function<void()> &callBack);
+    void setCloseCallBack(const std::function<void()> &callBack);
 
     void remove();
 

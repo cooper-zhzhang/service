@@ -28,6 +28,11 @@ void Channel::setErrorCallBack(const std::function<void()> &callBack)
   errorCallBack_ = callBack;
 }
 
+void Channel::setCloseCallBack(const std::function<void()> &callBack)
+{
+  closeCallBack_ = callBack;
+}
+
 void Channel::_update()
 {
   loop_->updateChannel(this);
