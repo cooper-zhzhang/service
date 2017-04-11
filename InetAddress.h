@@ -7,7 +7,9 @@ class InetAddress
   public:
     InetAddress(const struct sockaddr_in &address) : address_(address)
   {}
+    InetAddress() = default;
     InetAddress(int port);
+
     sa_family_t family() const;
     int port() const; 
 
