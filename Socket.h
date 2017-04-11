@@ -54,6 +54,11 @@ class Socket
       ::accept4(socket_fd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     }
 
+    void setKeepAlive()
+    {
+      int optval = 1;
+      ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, static_cast<socklen_t>(sizeof optval));
+    }
   private:
     int socket_fd_;
 };
