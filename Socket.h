@@ -18,7 +18,7 @@ class Socket
     {
       close(socket_fd_);
     }
-    
+
     int socketFd()
     {
       return socket_fd_;
@@ -39,8 +39,20 @@ class Socket
       }
     }
 
-    void listen();
-    int acceptSocket(InetAddress clientAddress);
+    void listen()
+    {
+      int sult =::listen(socket_fd_, SOMAXCONN);
+      if(sult < 0)
+      {
+        exit(-1);
+      }
+    }
+
+    int acceptSocket(InetAddress *clientAddress)
+    {
+      socklen_t len = sizeof(clientAddress->inetAddress());
+      ::accept4(socket_fd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
+    }
 
   private:
     int socket_fd_;
