@@ -3,8 +3,8 @@
 Acceptor::Acceptor(EventLoop *loop, InetAddress inetAddress):
   loop_(loop), serviceSocket_(Socket::createFd()), serviceChannel_(loop, serviceSocket_.socketFd())
 {
-  Socket::bindFdAndAddress(serviceSocket_, inetAddress);
-  serviceChannel_.setReadCallBack(std::bind(&Acceptor::handleRead, this));
+  Socket::bindFdAndAddress(serviceSocket_.socketFd(), inetAddress);
+  serviceChannel_.setReadCallBack(std::bind(&Acceptor::_handleRead, this));
 }
 
 Acceptor::~Acceptor()
