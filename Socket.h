@@ -1,4 +1,4 @@
-#ifndef SOCKET_H
+fndef SOCKET_H
 #define SOCKET_H
 #include <unistd.h>
 #include <sys/socket.h>
@@ -10,18 +10,18 @@ class Socket
 {
   public:
     Socket(int fd):
-      socket_fd_(fd){}
+      socketFd_(fd){}
     Socket(const Socket& socket) = delete;
     Socket& operator=(const Socket& socket) =  delete;
 
     ~Socket()
     {
-      close(socket_fd_);
+      close(socketFd_);
     }
 
     int socketFd()
     {
-      return socket_fd_;
+      return socketFd_;
     }
 
     static int createFd()
@@ -41,7 +41,7 @@ class Socket
 
     void listen()
     {
-      int sult =::listen(socket_fd_, SOMAXCONN);
+      int sult =::listen(socketFd_, SOMAXCONN);
       if(sult < 0)
       {
         exit(-1);
@@ -51,15 +51,15 @@ class Socket
     int acceptSocket(InetAddress *clientAddress)
     {
       socklen_t len = sizeof(clientAddress->inetAddress());
-      ::accept4(socket_fd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
+      ::accept4(socketFd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     }
 
     void setKeepAlive()
     {
       int optval = 1;
-      ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, static_cast<socklen_t>(sizeof optval));
+      ::setsockopt(socketFd_, SOL_SOCKET, SO_KEEPALIVE, &optval, static_cast<socklen_t>(sizeof optval));
     }
   private:
-    int socket_fd_;
+    int socketFd_;
 };
 #endif
