@@ -12,6 +12,7 @@ class Epoll
 {
   public:
     Epoll(EventLoop *loop);
+    ~Epoll();
     void removeChannel(Channel *channel);
     void updateChannel(Channel *channel);
     void poll(int timeOut, std::vector<Channel*> *channelList);
@@ -23,7 +24,7 @@ class Epoll
       {
         exit(-1);
       }
-      
+
       return eventFd;
     }
 

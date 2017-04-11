@@ -85,3 +85,29 @@ void EventLoop::runInQueue(std::function<void()> fun)
   pengFunctions_.push_back(fun);
 }
 
+void EventLoop::removeChannel(Channel *channel)
+{
+  epoll_->removeChannel(channel);
+}
+
+void EventLoop::updateChannel(Channel *channel)
+{
+  epoll_->updateChannel(channel);
+}
+
+void EventLoop::quit()
+{
+  quit_ = true;
+  if(!isInLoopThread())
+    wakeUp();
+}
+
+void EventLoop::handleWakeUp()
+{
+  int wakeup = 1;
+  size_t num = ::read(wakeFd_, &wakeup, sizeof(wakeup));
+  if(num != sizeof(wakeup))
+  {
+    // TODO 日志
+  }
+}
