@@ -4,8 +4,8 @@ const int TcpConnection::DISCONNECTING = 1;
 const int TcpConnection::CONNECTED = 2;
 const int TcpConnection::DISCONNECTED = 3;
 
-TcpConnection::TcpConnection(EventLoop *loop, const string name, 
-    int sockfd, const InetAddress &serviceAddres, const InetAddress clientAddres) :
+TcpConnection::TcpConnection(EventLoop *loop, const std::string name, 
+    int sockfd, const InetAddress &serviceAddres, const InetAddress &clientAddres) :
   loop_(loop), name_(name), serviceAddres_(serviceAddres),
   clinetAddres_(clientAddres), status_(CONNECTED), socket_(new Socket(sockfd)),
   channel_(new Channel(loop, sockfd))
@@ -20,7 +20,7 @@ TcpConnection::TcpConnection(EventLoop *loop, const string name,
 
 void TcpConnection::handleRead()
 {
-  ssize_t num = inputBuffer_.readByFd(channel_.fd());
+  ssize_t num = inputBuffer_.readByFd(channel_->fd());
   if(num > 0)
   {
     messageCallBack_(shared_from_this(), &inputBuffer_);
@@ -41,13 +41,13 @@ void TcpConnection::handleWrite()
   {
     ssize_t num = ::write(channel_->fd(), outputBuffer_.peek(), outputBuffer_.readableBytes());
 
-    if(n > 0)
+    if(num > 0)
     {
-      outputBuffer_.retrieve(n);
+      outputBuffer_.retrieve(num);
     }
     if(outputBuffer_.readableBytes() == 0)
     {
-      channel_.disableWriting();
+      channel_->disableWriting();
 
       if(status_ == DISCONNECTING)
       {
@@ -60,10 +60,10 @@ void TcpConnection::handleWrite()
 void TcpConnection::handleClose()
 {
   setStatus(DISCONNECTED);
-  channel_-disableAll();
+  channel_->disableAll();
 
   std::shared_ptr<TcpConnection> ptr(shared_from_this());
-  closeCallBack(ptr);
+  closeCallBack_(ptr);
 }
 
 void TcpConnection::handleError()
