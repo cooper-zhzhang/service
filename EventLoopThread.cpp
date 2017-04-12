@@ -1,7 +1,7 @@
 #include "EventLoopThread.h"
 #include <functional>
 
-EventLoopThread::EventLoopThread(string &name):
+EventLoopThread::EventLoopThread(std::string &name):
   loop_(nullptr), thread_(std::bind(&EventLoopThread::threaFun, this), name),
   mutex_(), condition_(mutex_)
 {

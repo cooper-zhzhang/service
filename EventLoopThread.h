@@ -11,7 +11,7 @@ class EventLoopThread
 {
   public:
 
-    EventLoopThread(string &name);
+    EventLoopThread(std::string &name);
     ~EventLoopThread();
     EventLoopThread(const EventLoopThread&) = delete;
     EventLoopThread& operator = (const EventLoopThread) = delete;
