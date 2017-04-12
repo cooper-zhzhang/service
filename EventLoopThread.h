@@ -4,6 +4,7 @@
 #include "EventLoop.h"
 #include "Thread.h"
 #include "Mutex.h"
+#include "MutexGuard.h"
 #include "Condition.h"
 #include <string>
 
@@ -26,6 +27,6 @@ class EventLoopThread
 
     Mutex mutex_;
     Condition condition_;
-
 };
+
 #endif 

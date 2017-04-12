@@ -13,7 +13,7 @@ EventLoopThread::~EventLoopThread()
   if(loop_ != nullptr)
   {
     loop_->quit();
-    thread_.jonin();
+    thread_.join();
   }
 }
 
@@ -42,7 +42,7 @@ void EventLoopThread::threaFun()
     condition_.signal();
   }
 
-  loop_.run();
+  loop_->run();
   loop_= nullptr;
 
 }
