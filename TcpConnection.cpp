@@ -15,7 +15,7 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string name,
   channel_->setReadCallBack(std::bind(&TcpConnection::handleRead, this));
   channel_->setCloseCallBack(std::bind(&TcpConnection::handleClose, this));
   socket_->setKeepAlive();
-  
+
 }
 
 void TcpConnection::handleRead()
@@ -44,14 +44,15 @@ void TcpConnection::handleWrite()
     if(num > 0)
     {
       outputBuffer_.retrieve(num);
-    }
-    if(outputBuffer_.readableBytes() == 0)
-    {
-      channel_->disableWriting();
-
-      if(status_ == DISCONNECTING)
+      if(outputBuffer_.readableBytes() == 0)
       {
-        shutDownInLoop();
+        channel_->disableWriting();
+
+        if(status_ == DISCONNECTING)
+        {
+          // TODO 补充这个函数的定义
+          shutDownInLoop();
+        }
       }
     }
   }
@@ -61,8 +62,10 @@ void TcpConnection::handleClose()
 {
   setStatus(DISCONNECTED);
   channel_->disableAll();
+  //对于disableAll的处理, epoll使用的是DEL
 
   std::shared_ptr<TcpConnection> ptr(shared_from_this());
+  //这个是用户的关闭回调，一般用于对TcpConnection的处理,或许是TcpServer定义的
   closeCallBack_(ptr);
 }
 

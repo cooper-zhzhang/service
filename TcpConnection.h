@@ -2,23 +2,25 @@
 #define TCPCONNECT_H
 
 #include <string>
+#include <memory>
 #include "EventLoop.h"
 #include "InetAddress.h"
 #include "Buffer.h"
+#include "Socket.h"
 
-class TcpConnection
+class TcpConnection : public enable_shared_ptr<TcpConnection>
 {
   public:
-    TcpConnection(EventLoop *loop, const string name,
-        int sockfd, const InetAddress &serviceAddre,
-        const InetAddress &clientAddre);
+    TcpConnection(EventLoop *loop, const std::string name,
+        int sockfd, const InetAddress &serviceAddres,
+        const InetAddress &clientAddres);
 
     TcpConnection(const TcpConnection&) = delete;
     TcpConnection & operator =(const TcpConnection&) = delete;
 
     ~TcpConnection();
 
-    const string& name()
+    const std::string& name()
     {
       return name_;
     }
@@ -27,6 +29,7 @@ class TcpConnection
     {
       return loop_;
     }
+
     const InetAddress& serviceAddres()
     {
     }
@@ -42,20 +45,25 @@ class TcpConnection
     }
 
     void send(void *message, int len);
-    void send(string &message);
+    void send(std::string &message);
     void send(Buffer *buffer);
 
-    Buffer* outputBuffer()
+    Buffer outputBuffer()
     {
       return outputBuffer_;
     }
 
-    BUffer* inputBuffer()
+    Buffer inputBuffer()
     {
       return inputBuffer_;
     }
 
-    void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection>> &ptr) callBack)
+    void setStatus(int flag)
+    {
+      status_ = flag;
+    }
+
+    void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection> &ptr)> callBack)
     {
       connectionCallBack_ = callBack;
     }
@@ -63,6 +71,11 @@ class TcpConnection
     void setMessageCallBack(std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> callBack)
     {
       messageCallBack_ = callBack;
+    }
+
+    void setCloseCallBack(std::function<void(std::shared_ptr<TcpConnection>)> callBack)
+    {
+      closeCallBack_ = callBack;
     }
 
     const static int DISCONNECTING;
@@ -77,10 +90,11 @@ class TcpConnection
 
     std::function<void(std::shared_ptr<TcpConnection> &ptr)> connectionCallBack_;
     std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> messageCallBack_;
+    std::function<void(std::shared_ptr<TcpConnection> &ptr)> closeCallBack;
 
 
     EventLoop *loop_;
-    string name_;
+    std::string name_;
     int status_;
     InetAddress serviceAddres_;
     InetAddress clinetAddres_;
@@ -90,7 +104,7 @@ class TcpConnection
 
     std::unique_ptr<Socket> socket_;
     std::unique_ptr<Channel> channel_;
-}
+};
 
 #endif
 
