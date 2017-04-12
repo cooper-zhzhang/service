@@ -70,6 +70,7 @@ void Channel::enableWriting()
 void Channel::disableAll()
 {
   events_ &= NONEEVENT;
+  _update();
 }
 
 bool Channel::isWriting()
