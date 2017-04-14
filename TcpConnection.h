@@ -8,7 +8,7 @@
 #include "Buffer.h"
 #include "Socket.h"
 
-class TcpConnection : public enable_shared_ptr<TcpConnection>
+class TcpConnection : public enable_shared_from_this<TcpConnection>
 {
   public:
     TcpConnection(EventLoop *loop, const std::string name,
@@ -42,7 +42,6 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
 
     bool connected()
     {
-      // TODO 添加常量
       status_ == CONNECTED;
     }
 
@@ -67,6 +66,7 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
 
     void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection> &ptr)> callBack)
     {
+      //TcpConnection 开始或者结束都要运行这个函数
       connectionCallBack_ = callBack;
     }
 
@@ -82,10 +82,16 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
 
     void shutDown();
 
+    void startRead();
+    void stopRead();
+
+    void start();
+    void stop();
+
     const static int DISCONNECTING;
     const static int CONNECTED;
     const static int DISCONNECTED;
-    const static int CONNECTED;
+    const static int CONNECTING:
 
   private:
     void handleWrite();
@@ -93,15 +99,18 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
     void handleClose();
     void handleError();
 
-    void shutDowniInLoop();
+    void shutDownInLoop();
 
     void sendInLoop(std::string &message);
     void sendInLoop(void *message, int len);
 
+    void startInLoop();
+    void stopReadInLoop();
+
     std::function<void(std::shared_ptr<TcpConnection> &ptr)> connectionCallBack_;
     std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> messageCallBack_;
     //给TcpServer 使用，用于通知移除所有的TcpConnecionPtr
-    std::function<void(std::shared_ptr<TcpConnection> &ptr)> closeCallBack;
+    std::function<void(std::shared_ptr<TcpConnection> &ptr)> closeCallBack_;
 
 
     EventLoop *loop_;
@@ -115,6 +124,8 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
 
     std::unique_ptr<Socket> socket_;
     std::unique_ptr<Channel> channel_;
+
+    bool reading_;
 };
 
 #endif

@@ -3,13 +3,13 @@
 const int TcpConnection::DISCONNECTING = 1;
 const int TcpConnection::CONNECTED = 2;
 const int TcpConnection::DISCONNECTED = 3;
-const int TcpConnection::CONNECTED = 4;
+const int TcpConnection::CONNECTING = 4;
 
 TcpConnection::TcpConnection(EventLoop *loop, const std::string name, 
     int sockfd, const InetAddress &serviceAddres, const InetAddress &clientAddres) :
   loop_(loop), name_(name), serviceAddres_(serviceAddres),
   clinetAddres_(clientAddres), status_(CONNECTED), socket_(new Socket(sockfd)),
-  channel_(new Channel(loop, sockfd))
+  channel_(new Channel(loop, sockfd)), reading_(false)
 {
   channel_->setErrorCallBack(std::bind(&TcpConnection::handleError, this));
   channel_->setWriteCallBack(std::bind(&TcpConnection::handleWrite, this));
@@ -97,7 +97,7 @@ void TcpConnection::send(std::string& message)
 
 void TcpConnection::sendInLoop(std::string &message)
 {
-  sendInLoop(message.data(), message.size());
+  sendInLoop(static_cast<void*>(message.data()), message.size());
 }
 
 void TcpConnection::sendInLoop(void *message, int len)
@@ -105,8 +105,8 @@ void TcpConnection::sendInLoop(void *message, int len)
   ssize_t num;
   size_t remaining = len;
   if(status_ == DISCONNECTED)
-    return 0;
-  if(!channel_->writing() && outputBuffer_.readableBytes() == 0)
+    return ;
+  if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
   {
     ssize_t num = ::write(channel_->fd(), message, len);
     if(num >= 0)
@@ -153,17 +153,56 @@ void TcpConnection::send(Buffer *buffer)
     }
     else
     {
-      void (TcpConnection::*fd)(std::string message) = &TcpConnection::sendInLoop;
+      void (TcpConnection::*fd)(std::string &message) = &TcpConnection::sendInLoop;
       loop_->runInLoop(std::bind(fd, this, buffer->allAsString()));
     }
   }
 }
 
+void TcpConnection::startRead()
+{
+  loop_->runInLoop(std::bind(TcpConnection::startInLoop, this));
+}
 
+void TcpConnection::startInLoop()
+{
+  if(!reading_ || !channel_->isReading())
+  {
+    channel_->enableReading();
+    reading_ = true;
+  }
+}
 
+void TcpConnection::stopRead()
+{
+  loop_->runInLoop(std::bind(&TcpConnection::stopReadInLoop, this));
+}
 
+void TcpConnection::stopReadInLoop()
+{
+  if(reading_ || channel_->isReading())
+  {
+    reading_ = false;
+    channel_->disableReading();
+  }
+}
 
+void TcpConnection::start()
+{
+  setStatus(CONNECTED);
+  startRead();
+  connectionCallBack_(shared_from_this());
+}
 
-
+void stop()
+{
+  if(status_ == CONNECTED)
+  {
+    setStatus(DISCONNECTED);
+    channel_->disableAll();
+    connectionCallBack_(shared_from_this());
+  }
+  channel_->remove();
+}
 
 
