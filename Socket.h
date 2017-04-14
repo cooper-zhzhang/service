@@ -59,6 +59,11 @@ class Socket
       int optval = 1;
       ::setsockopt(socketFd_, SOL_SOCKET, SO_KEEPALIVE, &optval, static_cast<socklen_t>(sizeof optval));
     }
+
+    void shutdownWrite()
+    {
+      ::shutdown(socketFd_, SHUT_WR);
+    }
   private:
     int socketFd_;
 };
