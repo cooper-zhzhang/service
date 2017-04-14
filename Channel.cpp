@@ -85,7 +85,7 @@ bool Channel::isReading()
 
 void Channel::handleEvent()
 {
-  if(respondEvents_ & EPOLLHUP && (!respondEvents_ & EPOLLIN))
+  if(respondEvents_ & EPOLLHUP && !(respondEvents_ & EPOLLIN))
   {
     if(errorCallBack_) errorCallBack_();
   }
