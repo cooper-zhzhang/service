@@ -32,10 +32,12 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
 
     const InetAddress& serviceAddres()
     {
+      return serviceAddres_;
     }
 
     const InetAddress& clientAddres()
     {
+      return clinetAddres_;
     }
 
     bool connected()
@@ -78,9 +80,12 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
       closeCallBack_ = callBack;
     }
 
+    void shutDown();
+
     const static int DISCONNECTING;
     const static int CONNECTED;
     const static int DISCONNECTED;
+    const static int CONNECTED;
 
   private:
     void handleWrite();
@@ -88,8 +93,14 @@ class TcpConnection : public enable_shared_ptr<TcpConnection>
     void handleClose();
     void handleError();
 
+    void shutDowniInLoop();
+
+    void sendInLoop(std::string &message);
+    void sendInLoop(void *message, int len);
+
     std::function<void(std::shared_ptr<TcpConnection> &ptr)> connectionCallBack_;
     std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> messageCallBack_;
+    //给TcpServer 使用，用于通知移除所有的TcpConnecionPtr
     std::function<void(std::shared_ptr<TcpConnection> &ptr)> closeCallBack;
 
 

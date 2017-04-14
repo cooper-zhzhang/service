@@ -3,6 +3,7 @@
 const int TcpConnection::DISCONNECTING = 1;
 const int TcpConnection::CONNECTED = 2;
 const int TcpConnection::DISCONNECTED = 3;
+const int TcpConnection::CONNECTED = 4;
 
 TcpConnection::TcpConnection(EventLoop *loop, const std::string name, 
     int sockfd, const InetAddress &serviceAddres, const InetAddress &clientAddres) :
@@ -20,6 +21,7 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string name,
 
 void TcpConnection::handleRead()
 {
+  //num 就是read的返回值
   ssize_t num = inputBuffer_.readByFd(channel_->fd());
   if(num > 0)
   {
@@ -73,4 +75,95 @@ void TcpConnection::handleError()
 {
   // TODO 日志
 }
+
+void TcpConnection::send(void *message, int len)
+{
+  send(std::string(static_cast<char *>message, len));
+}
+
+void TcpConnection::send(std::string& message)
+{
+  if(status_ == CONNECTED)
+  {
+    if(loop_->isInLoopThread())
+      sendInLoop(message);
+    else
+    {
+      void (TcpConnection::*fd)(std::string &message) = &TcpConnection::sendInLoop;
+      loop_->runInLoop(std::bind(fp, this, message));
+    }
+  }
+}
+
+void TcpConnection::sendInLoop(std::string &message)
+{
+  sendInLoop(message.data(), message.size());
+}
+
+void TcpConnection::sendInLoop(void *message, int len)
+{
+  ssize_t num;
+  size_t remaining = len;
+  if(status_ == DISCONNECTED)
+    return 0;
+  if(!channel_->writing() && outputBuffer_.readableBytes() == 0)
+  {
+    ssize_t num = ::write(channel_->fd(), message, len);
+    if(num >= 0)
+    {
+      remaining = len - num;
+    }
+    else
+    {
+      num = 0;
+    }
+  }
+
+  if(remaining > 0)
+  {
+    outputBuffer_.append(static_cast<char*>(data) + num, remaining); 
+    if(!channel_->isWriting())
+      channel_->enableWriting();
+  }
+}
+
+//其实不应该使用大写，是一个单词
+void TcpConnection::shutDown()
+{
+  if(status_ == CONNECTED)
+  {
+    setStatus(DISCONNECTING);
+    loop_->runInLoop(std::bind(TcpConnection::shutDownInLoop, this));
+  }
+}
+
+void TcpConnection::shutDownInLoop()
+{
+  if(!channel_->isWriting())
+    socket_->shutdownWrite();
+}
+
+void TcpConnection::send(Buffer *buffer)
+{
+  if(status_ == CONNECTED)
+  {
+    if(loop_->isInLoopThread())
+    {
+      sendInLoop(buffer->peek(), buffer->readableBytes());
+    }
+    else
+    {
+      void (TcpConnection::*fd)(std::string message) = &TcpConnection::sendInLoop;
+      loop_->runInLoop(std::bind(fd, this, buffer->allAsString()));
+    }
+  }
+}
+
+
+
+
+
+
+
+
 
