@@ -8,7 +8,7 @@
 #include "Buffer.h"
 #include "Socket.h"
 
-class TcpConnection : public enable_shared_from_this<TcpConnection>
+class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
   public:
     TcpConnection(EventLoop *loop, const std::string name,

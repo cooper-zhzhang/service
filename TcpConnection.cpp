@@ -90,7 +90,7 @@ void TcpConnection::send(std::string& message)
     else
     {
       void (TcpConnection::*fd)(std::string &message) = &TcpConnection::sendInLoop;
-      loop_->runInLoop(std::bind(fp, this, message));
+      loop_->runInLoop(std::bind(fd, this, message));
     }
   }
 }
@@ -121,7 +121,7 @@ void TcpConnection::sendInLoop(void *message, int len)
 
   if(remaining > 0)
   {
-    outputBuffer_.append(static_cast<char*>(data) + num, remaining); 
+    outputBuffer_.append(static_cast<char*>(message) + num, remaining); 
     if(!channel_->isWriting())
       channel_->enableWriting();
   }
@@ -194,7 +194,7 @@ void TcpConnection::start()
   connectionCallBack_(shared_from_this());
 }
 
-void stop()
+void TcpConnection::stop()
 {
   if(status_ == CONNECTED)
   {
