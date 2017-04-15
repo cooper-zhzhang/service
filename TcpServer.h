@@ -5,6 +5,9 @@
 #include "EventLoop.h"
 #include "InetAddress.h"
 #include "Buffer.h"
+#include "EventLoopThreadPool.h"
+#include "EventLoopThread.h"
+#include "TcpConnection.h"
 
 
 class TcpServer
@@ -32,12 +35,12 @@ class TcpServer
       return name_;
     }
 
-    void setMessageCallBack(std::function<void(const TcpConnectionPtr&, Buffer*)> callBack)
+    void setMessageCallBack(std::function<void(const std::shared_ptr<TcpConnection>&, Buffer*)> callBack)
     {
       messageCallback_ = callBack;
     }
 
-    void setConnectionCallBack(std::function<void(const TcpConnectionPtr&)> callBack)
+    void setConnectionCallBack(std::function<void(const std::shared_ptr<TcpConnection>&)> callBack)
     {
       connectionCallBack_ = callBack;
     }

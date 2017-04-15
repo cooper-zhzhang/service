@@ -9,7 +9,7 @@ TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string nam
   threadPools_(new EventLoopThreadPool(loop, name))
 {
   start_.store(0);
-  acceptor_->newConnectionCallBack(std::bind(&TcpServer::newConnection, this, _1, _2));
+  acceptor_->newConnectionCallBack(std::bind(&TcpServer::_newConnection, this, _1, _2));
 }
 
 TcpServer::~TcpServer()
@@ -57,9 +57,9 @@ void TcpServer::_removeConnection(const std::shared_ptr<TcpConnection> &connecti
 
 void TcpServer::_removeConnectionInLoop(const std::shared_ptr<TcpConnection> &connection)
 {
-  connections_.erase(conn->name());
-  EventLoop *loop = conn->getLoop();
-  loop->runInQueue(std::bind(&TcpConnection::stop, conn));
+  connections_.erase(connection->name());
+  EventLoop *loop = connection->getLoop();
+  loop->runInQueue(std::bind(&TcpConnection::stop, connection));
 }
 
 
