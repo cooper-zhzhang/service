@@ -2,12 +2,14 @@
 #define TCPSERVER_H
 
 #include <string>
+#include <atomic>
 #include "EventLoop.h"
 #include "InetAddress.h"
 #include "Buffer.h"
 #include "EventLoopThreadPool.h"
 #include "EventLoopThread.h"
 #include "TcpConnection.h"
+#include "Acceptor.h"
 
 
 class TcpServer
@@ -35,12 +37,12 @@ class TcpServer
       return name_;
     }
 
-    void setMessageCallBack(std::function<void(const std::shared_ptr<TcpConnection>&, Buffer*)> callBack)
+    void setMessageCallBack(std::function<void(std::shared_ptr<TcpConnection>&, Buffer*)> callBack)
     {
       messageCallback_ = callBack;
     }
 
-    void setConnectionCallBack(std::function<void(const std::shared_ptr<TcpConnection>&)> callBack)
+    void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection>&)> callBack)
     {
       connectionCallBack_ = callBack;
     }
@@ -57,8 +59,8 @@ private:
     std::unique_ptr<Acceptor> acceptor_;
     std::shared_ptr<EventLoopThreadPool> threadPools_;
 
-    std::function<void (const std::shared_ptr<TcpConnection> &, Buffer*)> messageCallback_;
-    std::function<void (const std::shared_ptr<TcpConnection> &)> connectionCallBack_;
+    std::function<void (std::shared_ptr<TcpConnection> &, Buffer*)> messageCallback_;
+    std::function<void (std::shared_ptr<TcpConnection> &)> connectionCallBack_;
 
     std::map<std::string, std::shared_ptr<TcpConnection>> connections_;
 

@@ -50,12 +50,12 @@ void TcpServer::_newConnection(int sockfd, InetAddress &clientAddres)
 }
 
 
-void TcpServer::_removeConnection(const std::shared_ptr<TcpConnection> &connection)
+void TcpServer::_removeConnection(std::shared_ptr<TcpConnection> &connection)
 {
   loop_->runInLoop(std::bind(&TcpServer::_removeConnectionInLoop, this, connection));
 }
 
-void TcpServer::_removeConnectionInLoop(const std::shared_ptr<TcpConnection> &connection)
+void TcpServer::_removeConnectionInLoop(std::shared_ptr<TcpConnection> &connection)
 {
   connections_.erase(connection->name());
   EventLoop *loop = connection->getLoop();
