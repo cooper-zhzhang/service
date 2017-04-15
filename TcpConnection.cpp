@@ -8,7 +8,7 @@ const int TcpConnection::CONNECTING = 4;
 TcpConnection::TcpConnection(EventLoop *loop, const std::string name, 
     int sockfd, const InetAddress &serviceAddres, const InetAddress &clientAddres) :
   loop_(loop), name_(name), serviceAddres_(serviceAddres),
-  clinetAddres_(clientAddres), status_(CONNECTED), socket_(new Socket(sockfd)),
+  clinetAddres_(clientAddres), status_(CONNECTING), socket_(new Socket(sockfd)),
   channel_(new Channel(loop, sockfd)), reading_(false)
 {
   channel_->setErrorCallBack(std::bind(&TcpConnection::handleError, this));
