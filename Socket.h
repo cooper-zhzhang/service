@@ -39,6 +39,15 @@ class Socket
       }
     }
 
+    static sockaddr_in getLocalAddres(int socketFd)
+    {
+      struct sockaddr_in addr;
+      bzero(&addr, sizeof(addr));
+      socklen_t len =  static_cast<socklen_t> (sizeof(addr));
+      getsockname(socketFd, (struct sockaddr*)&addr, len);
+      return addr;
+    }
+
     void listen()
     {
       int sult =::listen(socketFd_, SOMAXCONN);
