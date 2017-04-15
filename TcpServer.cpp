@@ -9,7 +9,7 @@ TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string nam
   threadPools_(new EventLoopThreadPool(loop, name))
 {
   start_.store(0);
-  acceptor_->newConnectionCallBack(std::bind(&TcpServer::_newConnection, this, _1, _2));
+  acceptor_->newConnectionCallBack(std::bind(&TcpServer::_newConnection, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 TcpServer::~TcpServer()
@@ -45,7 +45,7 @@ void TcpServer::_newConnection(int sockfd, InetAddress &clientAddres)
   connections_[connName] = conn;
   conn->setConnectionCallBack(connectionCallBack_);
   conn->setMessageCallBack(messageCallback_);
-  conn->setCloseCallBack(std:bind(&TcpServer::_removeConnection, this, _1));
+  conn->setCloseCallBack(std::bind(&TcpServer::_removeConnection, this, std::placeholders::_1));
   loop->runInLoop(std::bind(&TcpConnection::start, conn));
 }
 
