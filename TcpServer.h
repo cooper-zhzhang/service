@@ -47,6 +47,17 @@ class TcpServer
       connectionCallBack_ = callBack;
     }
 
+    static void defaultConnectionCallBack(std::shared_ptr<TcpConnection>& conn)
+    {
+      //空的函数体
+
+    }
+
+    static void defaultMessageCallBack(std::shared_ptr<TcpConnection> &cnon, Buffer *buffer)
+    {
+      buffer->retrieveAll();
+    }
+
 private:
     const std::string name_;
 

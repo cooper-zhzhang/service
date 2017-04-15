@@ -3,8 +3,8 @@
 
 TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string name)
   :loop_(loop), name_(name), acceptor_(new Acceptor(loop, serverAddres)),
-  connectionCallBack_(defaultConnectionCallBack()),
-  messageCallback_(defaultMessageCallBack()),
+  connectionCallBack_(TcpServer::defaultConnectionCallBack),
+  messageCallback_(TcpServer::defaultMessageCallBack),
   nextConnId_(1),
   threadPools_(new EventLoopThreadPool(loop, name))
 {
@@ -20,7 +20,7 @@ TcpServer::~TcpServer()
     //std::shared_ptr<Connection> conn = it->second;
     it->second.reset();
     conn->getLoop()->runInLoop(std::bind(&TcpConnection::stop, conn));
-    conn->reset();
+    conn.reset();
   }
 }
 
@@ -29,7 +29,7 @@ void TcpServer::start()
   if(start_.load() == 0)
   {
     threadPools_->start();
-    loop->runInLoop(std::bind(&Acceptor::linsten, acceptor_.get()));
+    loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
   }
 }
 
@@ -50,12 +50,12 @@ void TcpServer::_newConnection(int sockfd, InetAddress &clientAddres)
 }
 
 
-void TcpServer::_removeConnection(std::shared_ptr<TcpConnection> &connection)
+void TcpServer::_removeConnection(const std::shared_ptr<TcpConnection> &connection)
 {
   loop_->runInLoop(std::bind(&TcpServer::_removeConnectionInLoop, this, connection));
 }
 
-void TcpServer::_removeConnectionInLoop(std::shared_ptr<TcpConnection> &connection)
+void TcpServer::_removeConnectionInLoop(const std::shared_ptr<TcpConnection> &connection)
 {
   connections_.erase(connection->name());
   EventLoop *loop = connection->getLoop();
