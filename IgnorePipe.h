@@ -5,10 +5,11 @@
 
 class IgnorePipe
 {
-  IgnorePipe()
-  {
-    ::signal(SIGPIPE, SIG_IGN);
-  }
+  public:
+    IgnorePipe()
+    {
+      ::signal(SIGPIPE, SIG_IGN);
+    }
 };
 
 #endif
