@@ -1,0 +1,3 @@
+/home/we/git/service/CMakeFiles/edit_cache.dir
+/home/we/git/service/CMakeFiles/rebuild_cache.dir
+/home/we/git/service/CMakeFiles/server.dir

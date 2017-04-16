@@ -9,7 +9,7 @@
 class EventLoopThreadPool
 {
   public:
-    EventLoopThreadPool(EventLoop *baseLoop, std::string &name);
+    EventLoopThreadPool(EventLoop *baseLoop, const std::string &name);
     ~EventLoopThreadPool();
     EventLoopThreadPool(const EventLoopThreadPool&) = delete;
     EventLoopThreadPool& operator = (const EventLoopThreadPool&) = delete;
