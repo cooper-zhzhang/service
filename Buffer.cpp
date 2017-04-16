@@ -1,4 +1,6 @@
 #include "Buffer.h"
+#include <bits/uio.h>
+#include <sys/uio.h>
 
 const size_t Buffer::INITSIZE = 1024;
 const size_t Buffer::PREPEND = sizeof(unsigned long);//在64位电脑中为8bytes
@@ -10,7 +12,7 @@ size_t Buffer::readFd(int fd)
 
   size_t space = writableBytes();
   vec[0].iov_base = begin() + writeIndex_;
-  vec[0].iov_len = space();
+  vec[0].iov_len = space;
 
   vec[1].iov_base = buffer;
   vec[1].iov_len = sizeof(buffer);
@@ -23,13 +25,13 @@ size_t Buffer::readFd(int fd)
     return n;
   }
 
-  else if(implicit_cast<size_t>(n) < space)
+  else if(static_cast<size_t>(n) < space)
   {
     writeIndex_ += n;
   }
   else
   {
-    writeIndex_ = buffer.size();
+    writeIndex_ = buffer_.size();
     append(buffer, n - space);
   }
 
