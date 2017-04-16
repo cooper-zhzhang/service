@@ -9,13 +9,13 @@ class InetAddress;
 class Acceptor
 {
   public:
-    Acceptor(EventLoop *loop, InetAddress inetAddress);
+    Acceptor(EventLoop *loop, const InetAddress &inetAddress);
     ~Acceptor();
     Acceptor(const Acceptor &) = delete;
     Acceptor& operator = (const Acceptor&) = delete;
 
     void listen();
-    void newConnectionCallBack(const std::function<void(int, InetAddress)> &callBack)
+    void newConnectionCallBack(const std::function<void(int, const InetAddress&)> &callBack)
     {
       newConnectionCallBack_ = callBack;
     }

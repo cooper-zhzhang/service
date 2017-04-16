@@ -1,6 +1,6 @@
 #include "Acceptor.h"
 
-Acceptor::Acceptor(EventLoop *loop, InetAddress inetAddress):
+Acceptor::Acceptor(EventLoop *loop, const InetAddress &inetAddress):
   loop_(loop), serviceSocket_(Socket::createFd()), serviceChannel_(loop, serviceSocket_.socketFd())
 {
   Socket::bindFdAndAddress(serviceSocket_.socketFd(), inetAddress);
