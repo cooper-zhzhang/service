@@ -11,11 +11,10 @@
 #include "TcpConnection.h"
 #include "Acceptor.h"
 
-
 class TcpServer
 {
   public:
-    TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string &name);
+    TcpServer(EventLoop *loop, const InetAddress &serverAddres, const std::string &name);
     ~TcpServer();
     TcpServer(const TcpServer&) = delete;
     TcpServer& operator = (const TcpServer&) = delete;
@@ -47,18 +46,17 @@ class TcpServer
       connectionCallBack_ = callBack;
     }
 
-    static void defaultConnectionCallBack(std::shared_ptr<TcpConnection>& conn)
+    static void defaultConnectionCallBack(const std::shared_ptr<TcpConnection>& conn)
     {
       //空的函数体
-
     }
 
-    static void defaultMessageCallBack(std::shared_ptr<TcpConnection> &cnon, Buffer *buffer)
+    static void defaultMessageCallBack(const std::shared_ptr<TcpConnection> &cnon, Buffer *buffer)
     {
       buffer->retrieveAll();
     }
 
-private:
+  private:
     const std::string name_;
 
     void _newConnection(int sockfd, const InetAddress &clientAddres);

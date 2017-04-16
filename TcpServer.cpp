@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 #include "Socket.h"
 
-TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string &name)
+TcpServer::TcpServer(EventLoop *loop, const InetAddress &serverAddres, const std::string &name)
   :loop_(loop), name_(name), acceptor_(new Acceptor(loop, serverAddres)),
   connectionCallBack_(TcpServer::defaultConnectionCallBack),
   messageCallback_(TcpServer::defaultMessageCallBack),
