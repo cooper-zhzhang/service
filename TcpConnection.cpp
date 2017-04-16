@@ -122,7 +122,7 @@ void TcpConnection::sendInLoop(const void *message, int len)
 
   if(remaining > 0)
   {
-    outputBuffer_.append(message + num, remaining); 
+    outputBuffer_.append(static_cast<const char*>(message) + num, remaining); 
     if(!channel_->isWriting())
       channel_->enableWriting();
   }
