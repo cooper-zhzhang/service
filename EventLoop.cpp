@@ -1,15 +1,18 @@
 #include <unistd.h>
 #include "EventLoop.h"
 #include "MutexGuard.h"
+#include "IgnorePipe.h"
 
 EventLoop::EventLoop():
   running_(false), 
   quit_(false), 
+  calling_(false),
   threadId_(Current::tid()), 
   wakeFd_(Epoll::createEventFd()), 
   wakeChannel_(new Channel(this, wakeFd_)), 
   epoll_(Epoll::newEpoll(this))
 {
+  IgnorePipe ignorepipe;
   wakeChannel_->setReadCallBack(std::bind(&EventLoop::handleWakeUp, this));
   wakeChannel_->enableReading();
 }
@@ -54,6 +57,7 @@ void EventLoop::run()
 
 void EventLoop::doPengFunctions()
 {
+  calling_ = true;
   std::vector<std::function<void()>> functions;
 
   {
@@ -65,6 +69,7 @@ void EventLoop::doPengFunctions()
   {
     functions[i]();
   }
+  calling_ = false;
 }
 
 void EventLoop::runInLoop(std::function<void()> fun)
@@ -83,6 +88,11 @@ void EventLoop::runInQueue(std::function<void()> fun)
 {
   MutexGuard lock(mutex_);
   pengFunctions_.push_back(fun);
+  //不是正在调用，可能下一步就是调用
+  if(!isInLoopThread() || calling_)
+  {
+    wakeUp();
+  }
 }
 
 void EventLoop::removeChannel(Channel *channel)

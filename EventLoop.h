@@ -49,6 +49,7 @@ class EventLoop
     bool quit_;
     const pid_t threadId_;
 
+    bool calling_;
     int wakeFd_;
     Channel *wakeChannel_;
     void handleWakeUp();
