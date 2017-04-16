@@ -27,6 +27,11 @@ class EventLoopThreadPool
       return name_;
     }
 
+    void setNumbers(int num)
+    {
+      numbers_ = num;
+    }
+
     void start();
 
   private:

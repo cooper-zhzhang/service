@@ -1,6 +1,7 @@
 #ifndef ACCETPOR_H
 #define ACCETPOR_H
 #include "EventLoop.h"
+#include "Socket.h"
 
 class EventLoop;
 class InetAddress;
@@ -14,7 +15,7 @@ class Acceptor
     Acceptor& operator = (const Acceptor&) = delete;
 
     void listen();
-    void newConnectionCallBack(const std::function<void(int, InetAddress)> callBack)
+    void newConnectionCallBack(const std::function<void(int, InetAddress)> &callBack)
     {
       newConnectionCallBack_ = callBack;
     }

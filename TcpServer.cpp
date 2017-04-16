@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 #include "Socket.h"
 
-TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string name)
+TcpServer::TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string &name)
   :loop_(loop), name_(name), acceptor_(new Acceptor(loop, serverAddres)),
   connectionCallBack_(TcpServer::defaultConnectionCallBack),
   messageCallback_(TcpServer::defaultMessageCallBack),
@@ -33,7 +33,7 @@ void TcpServer::start()
   }
 }
 
-void TcpServer::_newConnection(int sockfd, InetAddress &clientAddres)
+void TcpServer::_newConnection(int sockfd, const InetAddress &clientAddres)
 {
   EventLoop* loop = threadPools_->getNextEvent();
   std::string connName = name_ + std::to_string(++nextConnId_);

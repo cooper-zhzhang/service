@@ -15,7 +15,7 @@
 class TcpServer
 {
   public:
-    TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string name);
+    TcpServer(EventLoop *loop, InetAddress &serverAddres, std::string &name);
     ~TcpServer();
     TcpServer(const TcpServer&) = delete;
     TcpServer& operator = (const TcpServer&) = delete;
@@ -29,7 +29,7 @@ class TcpServer
 
     void setThreadNum(int num)
     {
-      threadPools_->setThreadNum(num);
+      threadPools_->setNumbers(num);
     }
 
     std::string name()
@@ -37,12 +37,12 @@ class TcpServer
       return name_;
     }
 
-    void setMessageCallBack(std::function<void(std::shared_ptr<TcpConnection>&, Buffer*)> callBack)
+    void setMessageCallBack(std::function<void(const std::shared_ptr<TcpConnection>&, Buffer*)> callBack)
     {
       messageCallback_ = callBack;
     }
 
-    void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection>&)> callBack)
+    void setConnectionCallBack(std::function<void(const std::shared_ptr<TcpConnection>&)> callBack)
     {
       connectionCallBack_ = callBack;
     }
@@ -61,7 +61,7 @@ class TcpServer
 private:
     const std::string name_;
 
-    void _newConnection(int sockfd, InetAddress &clientAddres);
+    void _newConnection(int sockfd, const InetAddress &clientAddres);
     void _removeConnection(const std::shared_ptr<TcpConnection> &connection);
     void _removeConnectionInLoop(const std::shared_ptr<TcpConnection> &connection);
     EventLoop *loop_;
@@ -70,8 +70,8 @@ private:
     std::unique_ptr<Acceptor> acceptor_;
     std::shared_ptr<EventLoopThreadPool> threadPools_;
 
-    std::function<void (std::shared_ptr<TcpConnection> &, Buffer*)> messageCallback_;
-    std::function<void (std::shared_ptr<TcpConnection> &)> connectionCallBack_;
+    std::function<void (const std::shared_ptr<TcpConnection> &, Buffer*)> messageCallback_;
+    std::function<void (const std::shared_ptr<TcpConnection> &)> connectionCallBack_;
 
     std::map<std::string, std::shared_ptr<TcpConnection>> connections_;
 

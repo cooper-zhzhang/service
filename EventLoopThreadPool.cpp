@@ -32,8 +32,8 @@ void EventLoopThreadPool::start()
   {
     std::string threadName = name_ + std::to_string(i);
     EventLoopThread *pthread = new EventLoopThread(threadName);
-    threads_.push_back(std::unique_ptr<EventLoopThread>(pthrad));
-    loops_.push_back(pthread->startiRun());
+    threads_.push_back(std::unique_ptr<EventLoopThread>(pthread));
+    loops_.push_back(pthread->startRun());
   }
 }
 

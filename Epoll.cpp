@@ -3,6 +3,7 @@
 #include "Channel.h"
 #include <vector>
 #include "EventLoop.h"
+#include <strings.h>
 
 Epoll::Epoll(EventLoop *loop)
   : loop_(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC))
@@ -19,7 +20,7 @@ void Epoll::removeChannel(Channel *channel)
   int fd = channel->fd();
   channels_.erase(fd);
 
-  if(channel->status() == ADDRED)
+  if(channel->status() == Channel::ADDED)
     _update(EPOLL_CTL_DEL, channel);
 
   channel->setStatus(Channel::NEWED);
@@ -28,8 +29,9 @@ void Epoll::removeChannel(Channel *channel)
 void Epoll::updateChannel(Channel *channel)
 {
   int status = channel->status();
+  int fd = channel->fd();
 
-  if(status == Channel::ADDRED)
+  if(status == Channel::ADDED)
   {
     if(channel->isNonEvent())
       _update(EPOLL_CTL_DEL, channel);
@@ -39,7 +41,7 @@ void Epoll::updateChannel(Channel *channel)
 
   else if(status == Channel::DELETED)
   {
-    channel->setStatus(Channel::ADDRED);
+    channel->setStatus(Channel::ADDED);
     _update(EPOLL_CTL_ADD, channel);
   }
 
@@ -47,7 +49,7 @@ void Epoll::updateChannel(Channel *channel)
   {
     channels_[fd] = channel;
     _update(EPOLL_CTL_ADD, channel);
-    channel->setStatus(Channel::ADDRED);
+    channel->setStatus(Channel::ADDED);
   }
 
 }
@@ -55,7 +57,7 @@ void Epoll::updateChannel(Channel *channel)
 void Epoll::_update(int operation, Channel *channel)
 {
   struct epoll_event event;
-  bzero(event, sizeof(event));
+  bzero(&event, sizeof(event));
   event.data.ptr = channel;
   event.events = channel->events();
 

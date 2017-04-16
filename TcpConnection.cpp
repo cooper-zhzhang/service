@@ -78,10 +78,10 @@ void TcpConnection::handleError()
 
 void TcpConnection::send(void *message, int len)
 {
-  send(std::string(static_cast<char *>message, len));
+  send(std::string(static_cast<char *>(message), len));
 }
 
-void TcpConnection::send(std::string& message)
+void TcpConnection::send(const std::string& message)
 {
   if(status_ == CONNECTED)
   {
@@ -89,18 +89,18 @@ void TcpConnection::send(std::string& message)
       sendInLoop(message);
     else
     {
-      void (TcpConnection::*fd)(std::string &message) = &TcpConnection::sendInLoop;
+      void (TcpConnection::*fd)(const std::string &message) = &TcpConnection::sendInLoop;
       loop_->runInLoop(std::bind(fd, this, message));
     }
   }
 }
 
-void TcpConnection::sendInLoop(std::string &message)
+void TcpConnection::sendInLoop(const std::string &message)
 {
-  sendInLoop(static_cast<void*>(message.data()), message.size());
+  sendInLoop(static_cast<const void*>(message.data()), message.size());
 }
 
-void TcpConnection::sendInLoop(void *message, int len)
+void TcpConnection::sendInLoop(const void *message, int len)
 {
   ssize_t num;
   size_t remaining = len;
@@ -121,7 +121,7 @@ void TcpConnection::sendInLoop(void *message, int len)
 
   if(remaining > 0)
   {
-    outputBuffer_.append(static_cast<char*>(message) + num, remaining); 
+    outputBuffer_.append(message + num, remaining); 
     if(!channel_->isWriting())
       channel_->enableWriting();
   }
@@ -133,7 +133,7 @@ void TcpConnection::shutDown()
   if(status_ == CONNECTED)
   {
     setStatus(DISCONNECTING);
-    loop_->runInLoop(std::bind(TcpConnection::shutDownInLoop, this));
+    loop_->runInLoop(std::bind(&TcpConnection::shutDownInLoop, this));
   }
 }
 
@@ -153,7 +153,7 @@ void TcpConnection::send(Buffer *buffer)
     }
     else
     {
-      void (TcpConnection::*fd)(std::string &message) = &TcpConnection::sendInLoop;
+      void (TcpConnection::*fd)(const std::string &message) = &TcpConnection::sendInLoop;
       loop_->runInLoop(std::bind(fd, this, buffer->allAsString()));
     }
   }
@@ -161,7 +161,7 @@ void TcpConnection::send(Buffer *buffer)
 
 void TcpConnection::startRead()
 {
-  loop_->runInLoop(std::bind(TcpConnection::startInLoop, this));
+  loop_->runInLoop(std::bind(&TcpConnection::startInLoop, this));
 }
 
 void TcpConnection::startInLoop()

@@ -7,6 +7,7 @@
 #include "Epoll.h"
 #include "Mutex.h"
 class Epoll;
+class Channel;
 
 class EventLoop
 {

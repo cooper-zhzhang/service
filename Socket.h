@@ -1,10 +1,11 @@
-fndef SOCKET_H
+#ifndef SOCKET_H
 #define SOCKET_H
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include "InetAddress.h"
 #include <netinet/in.h>
+#include <strings.h>
 
 class Socket
 {
@@ -44,7 +45,7 @@ class Socket
       struct sockaddr_in addr;
       bzero(&addr, sizeof(addr));
       socklen_t len =  static_cast<socklen_t> (sizeof(addr));
-      getsockname(socketFd, (struct sockaddr*)&addr, len);
+      getsockname(socketFd, (struct sockaddr*)&addr, &len);
       return addr;
     }
 

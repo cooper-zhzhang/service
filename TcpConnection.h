@@ -46,7 +46,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
     }
 
     void send(void *message, int len);
-    void send(std::string &message);
+    void send(const std::string &message);
     void send(Buffer *buffer);
 
     Buffer outputBuffer()
@@ -64,13 +64,13 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
       status_ = flag;
     }
 
-    void setConnectionCallBack(std::function<void(std::shared_ptr<TcpConnection> &ptr)> callBack)
+    void setConnectionCallBack(std::function<void(const std::shared_ptr<TcpConnection> &ptr)> callBack)
     {
       //TcpConnection 开始或者结束都要运行这个函数
       connectionCallBack_ = callBack;
     }
 
-    void setMessageCallBack(std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> callBack)
+    void setMessageCallBack(std::function<void(const std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> callBack)
     {
       messageCallBack_ = callBack;
     }
@@ -91,7 +91,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
     const static int DISCONNECTING;
     const static int CONNECTED;
     const static int DISCONNECTED;
-    const static int CONNECTING:
+    const static int CONNECTING;
 
   private:
     void handleWrite();
@@ -101,14 +101,14 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 
     void shutDownInLoop();
 
-    void sendInLoop(std::string &message);
-    void sendInLoop(void *message, int len);
+    void sendInLoop(const std::string &message);
+    void sendInLoop(const void *message, int len);
 
     void startInLoop();
     void stopReadInLoop();
 
-    std::function<void(std::shared_ptr<TcpConnection> &ptr)> connectionCallBack_;
-    std::function<void(std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> messageCallBack_;
+    std::function<void(const std::shared_ptr<TcpConnection> &ptr)> connectionCallBack_;
+    std::function<void(const std::shared_ptr<TcpConnection> &ptr, Buffer *buffer)> messageCallBack_;
     //给TcpServer 使用，用于通知移除所有的TcpConnecionPtr
     std::function<void(std::shared_ptr<TcpConnection> &ptr)> closeCallBack_;
 

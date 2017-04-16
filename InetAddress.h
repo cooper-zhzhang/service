@@ -18,6 +18,11 @@ class InetAddress
       return address_;
     }
 
+    struct sockaddr_in * inetAddressPtr()
+    {
+      return &address_;
+    }
+
   private:
     struct sockaddr_in address_;
 };

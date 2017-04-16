@@ -22,10 +22,10 @@ void Acceptor::listen()
 void Acceptor::_handleRead()
 {
   InetAddress clientAddress;
-  int connFd = serviceSocket_.acceptSocket(clientAddress);
-  if(connFd >= 0 && newConnectionCallBack)
+  int connFd = serviceSocket_.acceptSocket(&clientAddress);
+  if(connFd >= 0 && newConnectionCallBack_)
   {
-    newConnectionCallBack(connFd, clientAddress);
+    newConnectionCallBack_(connFd, clientAddress);
   }
   else
   {

@@ -95,7 +95,7 @@ void Channel::handleEvent()
     if(readCallBack_) readCallBack_();
   }
 
-  if(respondEvents_ & ( EPOLLERR | EPOLLVAL))
+  if(respondEvents_ & ( EPOLLERR /*| POLLVAL*/))
   {
     if(errorCallBack_) errorCallBack_();
   }
