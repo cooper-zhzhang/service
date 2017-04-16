@@ -18,7 +18,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
     TcpConnection(const TcpConnection&) = delete;
     TcpConnection & operator =(const TcpConnection&) = delete;
 
-    ~TcpConnection();
+    ~TcpConnection() = default;
 
     const std::string& name()
     {
@@ -49,14 +49,14 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
     void send(const std::string &message);
     void send(Buffer *buffer);
 
-    Buffer outputBuffer()
+    Buffer* outputBuffer()
     {
-      return outputBuffer_;
+      return &outputBuffer_;
     }
 
-    Buffer inputBuffer()
+    Buffer* inputBuffer()
     {
-      return inputBuffer_;
+      return &inputBuffer_;
     }
 
     void setStatus(int flag)
