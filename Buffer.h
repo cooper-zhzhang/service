@@ -81,7 +81,7 @@ class Buffer
       }
     }
 
-    void append(const std::string data)
+    void append(const std::string &data)
     {
       append(data.data(), data.size());
     }
