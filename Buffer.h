@@ -2,14 +2,16 @@
 #define BUFFER_H
 
 #include <vector>
+#include <string>
+#include <cstddef>
 
 
 
 class Buffer
 {
   public:
-    static const size_t INITSIZE = 1024;
-    static const size_t PREPEND = sizeof(unsigned long);//在64位电脑中占8位
+    static const size_t INITSIZE;
+    static const size_t PREPEND;
     explicit Buffer(size_t initSize = Buffer::INITSIZE):
       buffer_(Buffer::INITSIZE), readerIndex_(Buffer::PREPEND), writeIndex_(Buffer::PREPEND)
   {
@@ -18,6 +20,8 @@ class Buffer
     ~Buffer()
     {
     }
+
+    size_t readFd(int fd);
 
     unsigned long peekUlong()
     {
@@ -78,7 +82,7 @@ class Buffer
 
     void append(const std::string data)
     {
-      append(string.data(), data.size());
+      append(data.data(), data.size());
     }
 
     void append(const void *data, size_t len)
@@ -104,6 +108,11 @@ class Buffer
     void hasWritten(size_t len)
     {
       writeIndex_ += len;
+    }
+
+    char* beginWrite()
+    {
+      return begin() + writeIndex_;
     }
 
   private:
