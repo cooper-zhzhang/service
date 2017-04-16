@@ -1,11 +1,11 @@
 #include "Buffer.h"
-#include <bits/uio.h>
+//#include <bits/uio.h>
 #include <sys/uio.h>
 
 const size_t Buffer::INITSIZE = 1024;
 const size_t Buffer::PREPEND = sizeof(unsigned long);//在64位电脑中为8bytes
 
-size_t Buffer::readFd(int fd)
+size_t Buffer::readByFd(int fd)
 {
   char buffer[65563];
   struct iovec vec[2];

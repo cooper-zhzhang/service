@@ -17,11 +17,12 @@ class Buffer
   {
   }
 
-    ~Buffer()
-    {
-    }
+    Buffer(const Buffer&) = delete;
+    Buffer& operator = (const Buffer&) = delete;
 
-    size_t readFd(int fd);
+    ~Buffer() = default;
+
+    size_t readByFd(int fd);
 
     unsigned long peekUlong()
     {
@@ -56,7 +57,7 @@ class Buffer
       writeIndex_ = PREPEND;
     }
 
-    std::string retrieveAllAsString()
+    std::string allAsString()
     {
       return retrieveAsString(readableBytes());
     }
