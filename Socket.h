@@ -61,7 +61,7 @@ class Socket
     int acceptSocket(InetAddress *clientAddress)
     {
       socklen_t len = sizeof(clientAddress->inetAddress());
-      ::accept4(socketFd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
+      return ::accept4(socketFd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     }
 
     void setKeepAlive()
