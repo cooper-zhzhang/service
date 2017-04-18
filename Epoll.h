@@ -35,6 +35,8 @@ class Epoll
       return new Epoll(loop);
     }
 
+    static const int INITVECTORSIZE;
+
   private:
     void fillActiveChannel(int num, std::vector<Channel*> *chanbelList);
     void _update(int operation, Channel *channel);
