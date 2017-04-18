@@ -7,7 +7,7 @@
 class EchoServer
 {
   public:
-    EchoServer(EventLoop *loop, 
+    EchoServer(EventLoop *loop,
         const InetAddress &seraddrs)
       : loop_(loop), server_(loop, seraddrs, "echo")
     {
@@ -27,6 +27,11 @@ class EchoServer
       conn->send(msg);
     }
 
+    void run()
+    {
+      server_.start();
+    }
+
 
   private:
     EventLoop *loop_;
@@ -39,6 +44,7 @@ int main()
   EventLoop loop;
   InetAddress listenAddr(3000);
   EchoServer ser(&loop, listenAddr);
+  ser.run();
   loop.run();
   return 0;
 }
