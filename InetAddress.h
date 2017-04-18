@@ -4,26 +4,24 @@
 
 class InetAddress
 {
-  public:
+public:
     InetAddress(const struct sockaddr_in &address) : address_(address)
-  {}
+    {}
+    InetAddress(uint16_t port);
     InetAddress() = default;
-    InetAddress(int port);
-
     sa_family_t family() const;
-    int port() const; 
+    int port() const;
 
-    struct sockaddr_in inetAddress() 
+    struct sockaddr_in inetAddress()
     {
-      return address_;
+        return address_;
     }
 
     struct sockaddr_in * inetAddressPtr()
     {
-      return &address_;
+        return &address_;
     }
-
-  private:
+private:
     struct sockaddr_in address_;
 };
 
