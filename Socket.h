@@ -6,6 +6,7 @@
 #include "InetAddress.h"
 #include <netinet/in.h>
 #include <strings.h>
+#include <iostream>
 
 class Socket
 {
@@ -27,7 +28,13 @@ class Socket
 
     static int createFd()
     {
-      return socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+       int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+
+       if(fd < 0)
+       {
+         exit(-1);
+       }
+       return fd;
     }
 
     static void bindFdAndAddress(int Fd, InetAddress serviceAddress)
@@ -61,7 +68,7 @@ class Socket
     int acceptSocket(InetAddress *clientAddress)
     {
       socklen_t len = sizeof(clientAddress->inetAddress());
-      ::accept4(socketFd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
+      return ::accept4(socketFd_, (sockaddr*)(clientAddress->inetAddressPtr()), &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     }
 
     void setKeepAlive()

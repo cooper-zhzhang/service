@@ -42,7 +42,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 
     bool connected()
     {
-      status_ == CONNECTED;
+      return status_ == CONNECTED;
     }
 
     void send(void *message, int len);
