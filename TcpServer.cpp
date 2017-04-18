@@ -29,7 +29,6 @@ void TcpServer::start()
   if(start_.load() == 0)
   {
     threadPools_->start();
-    acceptor_->listen();
     loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
   }
 }
