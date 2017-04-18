@@ -7,17 +7,17 @@
 
 void fun()
 {
-	std::cout << "this is a thread" << std::endl;
+  std::cout << "this is a thread" << std::endl;
 }
 
 int main()
 {
 
-	std::function<void()> thread_fun = fun;
-	Thread thread(thread_fun, std::string("test"));
-	std::cout << thread.name() << std::endl;
-	thread.start();
-	thread.join();
+  std::function<void()> thread_fun = fun;
+  Thread thread(thread_fun, std::string("test"));
+  std::cout << thread.name() << std::endl;
+  thread.start();
+  thread.join();
 
-	return 0;
+  return 0;
 }
