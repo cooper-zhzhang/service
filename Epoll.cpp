@@ -5,8 +5,10 @@
 #include "EventLoop.h"
 #include <strings.h>
 
+const int Epoll::INITVECTORSIZE = 16;
 Epoll::Epoll(EventLoop *loop)
-  : loop_(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC))
+  : loop_(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC)),
+  events_(Epoll::INITVECTORSIZE)
 {
 }
 
@@ -83,6 +85,8 @@ void Epoll::poll(int timeOut, std::vector<Channel*> *channelList)
   if(num > 0)
   {
     fillActiveChannel(num, channelList);
+    if(static_cast<size_t>(num) == events_.size())
+      events_.resize(events_.size() * 2);
   }
   else if(num == 0)
   {
