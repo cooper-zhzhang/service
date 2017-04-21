@@ -98,7 +98,6 @@ class Channel
     std::function<void()> writeCallBack_;
     std::function<void()> closeCallBack_;
     std::function<void()> errorCallBack_;
-    std::function<void()> eventCallBack_;
 };
 
 #endif
