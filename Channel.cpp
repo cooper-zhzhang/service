@@ -87,7 +87,7 @@ void Channel::handleEvent()
 {
   if(respondEvents_ & EPOLLHUP && !(respondEvents_ & EPOLLIN))
   {
-    if(errorCallBack_) errorCallBack_();
+    if(closeCallBack_) closeCallBack_();
   }
 
   if(respondEvents_ & (EPOLLIN | EPOLLPRI | EPOLLHUP))
