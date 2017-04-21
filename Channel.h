@@ -11,6 +11,9 @@ class Channel
   public:
     Channel(EventLoop *loop, int fd);
 
+    Chanel(const Channel&) = delete;
+    Channel& operator= (const Channel&) = delete; 
+
     void handleEvent();
 
     void setReadCallBack(const std::function<void()> &callBack);
