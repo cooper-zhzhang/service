@@ -3,6 +3,7 @@
 #include "Buffer.h"
 #include <memory>
 #include <functional>
+#include <iostream>
 
 class EchoServer
 {
@@ -24,6 +25,7 @@ class EchoServer
     void onMessage(const std::shared_ptr<TcpConnection> &conn, Buffer *buf)
     {
       std::string msg(buf->allAsString());
+      std::cout << msg << std::endl;
       conn->send(msg);
     }
 
