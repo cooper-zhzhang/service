@@ -53,7 +53,6 @@ void TcpConnection::handleWrite()
 
         if(status_ == DISCONNECTING)
         {
-          // TODO 补充这个函数的定义
           shutDownInLoop();
         }
       }
@@ -68,7 +67,8 @@ void TcpConnection::handleClose()
   //对于disableAll的处理, epoll使用的是DEL
 
   std::shared_ptr<TcpConnection> ptr(shared_from_this());
-  //这个是用户的关闭回调，一般用于对TcpConnection的处理,或许是TcpServer定义的
+
+  //是TcpServer定义的, 用于移除TcpServer中保存的
   closeCallBack_(ptr);
 }
 
