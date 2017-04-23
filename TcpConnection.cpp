@@ -67,6 +67,7 @@ void TcpConnection::handleClose()
   //对于disableAll的处理, epoll使用的是DEL
 
   std::shared_ptr<TcpConnection> ptr(shared_from_this());
+  connectionCallBack_(ptr);
 
   //是TcpServer定义的, 用于移除TcpServer中保存的
   closeCallBack_(ptr);
