@@ -67,6 +67,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
     void setConnectionCallBack(std::function<void(const std::shared_ptr<TcpConnection> &ptr)> callBack)
     {
       //TcpConnection 开始或者结束都要运行这个函数
+      // 这个函数是由业务层指定的，在TcpConnection 中的stop() 函数中调用一次
+      //在TcpServer 的_newConnection() 中调用一次
       connectionCallBack_ = callBack;
     }
 
