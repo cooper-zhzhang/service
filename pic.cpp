@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <strings.h>
 #include <arpa/inet.h>
+#include <error.h>
 
 int main(int argc, char **argv)
 {
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
   if(result == -1)
   {
     std::cout << "connect error" << std::endl;
+    std::cout << error << std::endl;
   }
 
   char buffer[100];
