@@ -1,30 +1,41 @@
+#include <iostream>
+#include <functions>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string>
+#include <string.h>
+#include "TcpServer.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
-#include "TcpServer.h"
-#include <functional>
-#include <string>
-#include <set>
-#include <iostream>
 
-class chatServer
+class Translate
 {
   public:
-    chatServer(TcpServer *server):server_(server)
+    Translate(TcpServer *server):server_(server)
   {
-    server_->setConnectionCallBack(std::bind(&chatServer::connection, this, std::placeholders::_1));
-    server_->setMessageCallBack(std::bind(&chatServer::message, this, std::placeholders::_1, std::placeholders::_2));
+    server_->setConnectionCallBack(std::bind(&Translate::connection, this, std::placeholders::_1));
+    server_->setMessageCallBack(std::bind(&Translate::message, this, std::placeholders::_1, std::placeholders::_2));
   }
+
     void start()
     {
       server_->start();
     }
-
     void connection(const std::shared_ptr<TcpConnection> & ptr)
     {
       if(ptr->connected())
       {
-        connections_.insert(ptr);
-        
+        int fd;
+
+        if ((fd = open(ptr->name().c_str(), O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) == -1)
+        {
+          ptr->stop();
+          return;
+        }
+
+//        connections_.insert(std::pair<std::shared_ptr<TcpConnection>, int>(ptr, fd));
+        connections_.insert(std::make_pair(ptr, fd));
+
         std::cout << "size " << connections_.size() << std::endl;
         std::cout << " :" << ((ptr->clientAddres()).port());
       }
@@ -34,38 +45,27 @@ class chatServer
         std::cout << "销毁" << std::endl;
       }
     }
-
     void message(const std::shared_ptr<TcpConnection>&ptr, Buffer *buffer)
     {
-      std::string mes = buffer->allAsString();
-      mes = std::string("other: ") + mes;
 
-      for(auto it = connections_.begin(); it != connections_.end(); ++it)
-      {
-        std::cout << "send size :" << connections_.size() << std::endl;
-        std::cout << mes << std::endl;
-        if((*it) == ptr)
-          continue;
-        (*it)->send(mes);
-      }
     }
 
   private:
-    TcpServer *server_;
-    std::set<std::shared_ptr<TcpConnection>> connections_;
 
+    TcpServer *server_;
+    std::map<std::shared_ptr<TcpConnection>, int> connections_;
 };
 
-int main()
+int main(int argc, char **argv)
 {
-  InetAddress addres(3000);
+
+  InetAddress addres(5000);
   EventLoop loop;
-  TcpServer ser(&loop, addres, std::string("chatServer"));
-  chatServer chat(&ser);
-  chat.start();
+  TcpServer server(&loop, address, std::string("tran"));
+  Translate transerver(&server);
+  transerver.start();
   loop.run();
 
   return 0;
-
 }
 
