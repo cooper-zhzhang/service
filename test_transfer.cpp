@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string>
@@ -13,7 +14,7 @@ class Translate
     Translate(TcpServer *server):server_(server)
   {
     server_->setConnectionCallBack(std::bind(&Translate::connection, this, std::placeholders::_1));
-    server_->setMessageCallBack(std::bind(&Translate::message, this, std::placeholder::_1, std::placeholders::_2));
+    server_->setMessageCallBack(std::bind(&Translate::message, this, std::placeholders::_1, std::placeholders::_2));
   }
 
     void start()
@@ -32,7 +33,8 @@ class Translate
           return;
         }
 
-        connections_.insert(std::pair(ptr, fd));
+//        connections_.insert(std::pair<std::shared_ptr<TcpConnection>, int>(ptr, fd));
+        connections_.insert(std::make_pair(ptr, fd));
 
         std::cout << "size " << connections_.size() << std::endl;
         std::cout << " :" << ((ptr->clientAddres()).port());
@@ -43,9 +45,17 @@ class Translate
         std::cout << "销毁" << std::endl;
       }
     }
+
     void message(const std::shared_ptr<TcpConnection>&ptr, Buffer *buffer)
     {
+      std::cout <<  "write data" << std::endl;
+      auto it = connections_.find(ptr);
+      if(it == connections_.end())
+        return;
 
+      int fd = it->second;
+      std::string data = buffer->allAsString();
+      write(fd, data.data(), data.size());  
     }
 
   private:
@@ -59,6 +69,10 @@ int main(int argc, char **argv)
 
   InetAddress addres(5000);
   EventLoop loop;
+  TcpServer server(&loop, addres, std::string("tran"));
+  Translate transerver(&server);
+  transerver.start();
+  loop.run();
 
   return 0;
 }
