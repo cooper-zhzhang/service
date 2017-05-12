@@ -3,19 +3,67 @@
 #include <unistd.h>
 #include <string>
 #include <string.h>
+#include "TcpServer.h"
+#include "EventLoop.h"
+#include "InetAddress.h"
 
-using namespace std;
+class Translate
+{
+  public:
+    Translate(TcpServer *server):server_(server)
+  {
+    server_->setConnectionCallBack(std::bind(&Translate::connection, this, std::placeholders::_1));
+    server_->setMessageCallBack(std::bind(&Translate::message, this, std::placeholder::_1, std::placeholders::_2));
+  }
 
+    void start()
+    {
+      server_->start();
+    }
+    void connection(const std::shared_ptr<TcpConnection> & ptr)
+    {
+      if(ptr->connected())
+      {
+        int fd;
 
-int main()
+        if ((fd = open(ptr->name().c_str(), O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) == -1)
+        {
+          ptr->stop();
+          return;
+        }
+
+        connections_.insert(std::pair(ptr, fd));
+
+        std::cout << "size " << connections_.size() << std::endl;
+        std::cout << " :" << ((ptr->clientAddres()).port());
+      }
+      else
+      {
+        connections_.erase(ptr);
+        std::cout << "销毁" << std::endl;
+      }
+    }
+    void message(const std::shared_ptr<TcpConnection>&ptr, Buffer *buffer)
+    {
+
+    }
+
+  private:
+
+    TcpServer *server_;
+    std::map<std::shared_ptr<TcpConnection>, int> connections_;
+};
+
+int main(int argc, char **argv)
 {
 
-  int count = 0;
-  std::string fileName = to_string(cout);
-  int fd = open("1.txt", O_RDONLY);
   char data[100];
+  int count = 0;
+  //  std::string fileName = to_string(cout);
   memset(data, 0, 100);
-  int num = read(fd, data, 100);
+  for(int i = 0; i < 100; ++i)
+    data[i] = i;
+  int num = write(fd, data, 100);
   std::cout << string(data);
   return 0;
 }
