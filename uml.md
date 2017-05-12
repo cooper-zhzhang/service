@@ -11,12 +11,13 @@ Acceptor->TcpServer:TcpServer::_newConntion()
 TcpServer->TcpConnection:TcpConnection::start()
 TcpConnection-->TcpConnection:TcpConnection::starRead()
 TcpConnection-->TcpConnection:TcpConnection::startInLoop()
-TcpConnection-->Channel:Channel::enableReading()
-Channel-->Channel:Channel::_update()
+TcpConnection->Channel:Channel::enableReading()
+Channel->Channel:Channel::_update()
 Channel->EventLoop:EventLoop::updateChannel()
 EventLoop->Epoll:Epoll::updateChannel()
 Epoll-->Epoll:Epoll::_update()
-
+Epoll-->EventLoop:
+EventLoop-->EventLoop:EventLoop::run()
 ```
 <center> <h1>客户端挂起</h1></center>
 ```seq
