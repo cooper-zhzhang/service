@@ -57,14 +57,9 @@ class Translate
 int main(int argc, char **argv)
 {
 
-  char data[100];
-  int count = 0;
-  //  std::string fileName = to_string(cout);
-  memset(data, 0, 100);
-  for(int i = 0; i < 100; ++i)
-    data[i] = i;
-  int num = write(fd, data, 100);
-  std::cout << string(data);
+  InetAddress addres(5000);
+  EventLoop loop;
+
   return 0;
 }
 
