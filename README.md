@@ -6,7 +6,7 @@
 
 <center> <h1>连接过程</h1></center>
 
-```sequence
+``` sequence
 EventLoop-->EventLoop:EventLoop::run()
 EventLoop->Epoll:Epoll:run()
 EventLoop->Channel: Channel:handleEvent()
@@ -24,7 +24,7 @@ Epoll-->Epoll:Epoll::_update()
 ```
 <center> <h1>客户端挂起</h1></center>
 
-```sequence
+``` sequence
 EventLoop-->EventLoop:EventLoop::run()
 EventLoop->Epoll:Epoll:poll()
 Epoll-->EventLoop:
@@ -48,7 +48,7 @@ TcpServer-->EventLoop:
 
 <center> <h1>客户端关闭write操作</h1></center>
 
-```sequence
+``` sequence
 EventLoop-->EventLoop:EventLoop::run()
 EventLoop->Epoll:Epoll:poll()
 Epoll-->EventLoop:
